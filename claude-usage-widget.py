@@ -764,13 +764,17 @@ class UsageWidget(Gtk.Window):
         ]
 
         for label, meter, show_session_reset in meters:
+            # Skip meters that don't exist on this plan
+            if meter is None or meter.get("utilization") is None:
+                continue
+
             cr.select_font_face("JetBrains Mono", 0, 0)
             cr.set_font_size(9)
             cr.set_source_rgba(*C["label"], a)
             cr.move_to(pad, y)
             cr.show_text(label)
 
-            if show_session_reset and meter:
+            if show_session_reset:
                 resets = time_until(meter.get("resetsAt"))
                 txt = f"resets {resets}"
                 ext = cr.text_extents(txt)
@@ -779,17 +783,6 @@ class UsageWidget(Gtk.Window):
                 cr.show_text(txt)
 
             y += 10
-
-            if meter is None or meter.get("utilization") is None:
-                rounded_rect(cr, pad, y, bar_w + 50, bar_h, bar_r)
-                cr.set_source_rgba(*C["dim"], a * 0.5)
-                cr.fill()
-                cr.set_font_size(9)
-                cr.set_source_rgba(*C["label"], a * 0.6)
-                cr.move_to(pad + (bar_w + 50) / 2 - 8, y + bar_h - 0.5)
-                cr.show_text("n/a")
-                y += bar_h + 16
-                continue
 
             pct = meter["utilization"]
             clamped = max(0.0, min(100.0, pct))
