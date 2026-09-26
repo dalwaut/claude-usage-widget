@@ -28,7 +28,7 @@ sudo apt install python3-gi python3-gi-cairo
 
 ```bash
 # Clone or download
-git clone https://github.com/boutabyte/claude-usage-widget.git
+git clone https://github.com/dalwaut/claude-usage-widget.git
 cd claude-usage-widget
 
 # Make executable
@@ -82,9 +82,15 @@ Settings are stored in `~/.config/claude-usage-widget/settings.json`:
 
 Credentials (if manually provided) are stored in `~/.config/claude-usage-widget/credentials.json`.
 
+> **Note:** a manually pasted token is saved as plain JSON in that file, and the widget doesn't restrict its file permissions. To keep other users on the machine from reading it, run `chmod 600 ~/.config/claude-usage-widget/credentials.json`. If you use Claude Code, the automatic option avoids storing a second copy of the token.
+
 ## How It Works
 
-The widget polls the Anthropic OAuth usage API (`/api/oauth/usage`) every 30 seconds using your OAuth access token. It displays:
+The widget polls the Anthropic OAuth usage endpoint (`/api/oauth/usage`) every 30 seconds using your OAuth access token.
+
+> **Note:** this endpoint isn't part of Anthropic's published API documentation. It can change or stop responding without notice, and if it does, the widget's bars will stop updating until the widget is updated.
+
+It displays:
 
 | Meter | Description |
 |-------|-------------|
